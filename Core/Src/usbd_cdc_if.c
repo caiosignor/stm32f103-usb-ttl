@@ -256,12 +256,6 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t *pbuf, uint16_t length)
   /* USER CODE END 5 */
 }
 
-uint8_t tx_is_not_completed = 0;
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
-{
-  tx_is_not_completed = 0;
-}
-
 /**
   * @brief  Data received over USB OUT endpoint are sent over CDC interface
   *         through this function.
@@ -280,8 +274,6 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 static int8_t CDC_Receive_FS(uint8_t *Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
-  if (tx_is_not_completed)
-    return USBD_BUSY;
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
   HAL_UART_Transmit(&huart1, Buf, *Len, 1000);
